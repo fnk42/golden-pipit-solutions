@@ -372,46 +372,29 @@
   body{min-height:100vh;display:flex;flex-direction:column}
   body>main{flex:1 0 auto}
 
-  /* Closing prompt on the inner pages. */
-  .endcta{background:var(--bg-2);border-top:1px solid var(--line);padding-block:var(--s7)}
-  .endcta .wrap{display:flex;align-items:center;justify-content:space-between;
-    gap:var(--s5);flex-wrap:wrap}
-  .endcta h3{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;margin:0 0 5px}
-  .endcta p{margin:0;color:var(--dim);font-size:14.5px;max-width:52ch}
+  /* Contact details. No form, no send button: the address and the number are
+     the whole of it. */
+  .cbox{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;max-width:560px}
+  .cline{background:var(--bg);padding:var(--s4) var(--s5);display:flex;
+    align-items:baseline;gap:var(--s4);text-decoration:none;color:inherit;
+    transition:background .15s}
+  a.cline:hover{background:var(--bg-2)}
+  .clabel{flex:0 0 96px;font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+  .cval{font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--ink);
+    word-break:break-word}
+  a.cline .cval{border-bottom:1px solid var(--line)}
+  a.cline:hover .cval{border-bottom-color:currentColor}
+  @media (max-width:520px){
+    .cline{display:block}
+    .clabel{display:block;margin-bottom:3px}
+  }
 
   footer .wrap{flex-wrap:wrap;gap:var(--s3) var(--s5)}
   .footnav{display:flex;gap:var(--s4);flex-wrap:wrap}
   .footnav a,footer a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
   .footnav a:hover,footer a:hover{color:var(--ink);border-bottom-color:var(--line)}
-
-  /* Enquiry fallback: mailto: silently does nothing when no mail client is
-     registered, which is most machines now. The composed message is shown so
-     it can always be copied. */
-  .enqout{margin-top:var(--s4);border:1px solid var(--line);border-radius:12px;
-    background:var(--bg-2);padding:var(--s4)}
-  .enqout h4{font-size:14px;margin:0 0 4px}
-  .enqout p{font-size:13px;color:var(--dim);margin:0 0 var(--s3);line-height:1.5}
-  .enqout textarea{width:100%;box-sizing:border-box;font-family:'JetBrains Mono',monospace;
-    font-size:12.5px;line-height:1.55;border:1px solid var(--line);border-radius:9px;
-    padding:11px 12px;background:var(--bg);color:var(--ink);resize:vertical}
-  .enqrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:var(--s3)}
-  .enqrow .ok{font-size:12.6px;color:var(--teal-700);font-weight:600}
-
-  /* Enquiry form. */
-  .enq{max-width:760px;display:grid;gap:var(--s4);margin-top:var(--s5)}
-  .enq label{display:block;font-size:13px;font-weight:600;color:var(--ink)}
-  .enq .opt{font-weight:400;color:var(--dim)}
-  .enq input,.enq textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;
-    font:inherit;font-size:15px;font-weight:400;color:var(--ink);background:var(--bg);
-    border:1px solid var(--line);border-radius:10px;padding:11px 13px;
-    transition:border-color .15s,box-shadow .15s}
-  .enq input:focus,.enq textarea:focus{outline:none;border-color:var(--brand-600);
-    box-shadow:0 0 0 3px rgba(92,119,158,.16)}
-  .enq textarea{resize:vertical;line-height:1.5}
-  .f2{display:grid;gap:var(--s4);grid-template-columns:1fr 1fr}
-  .frow{display:flex;align-items:center;gap:var(--s4);flex-wrap:wrap}
-  .fnote{font-size:12.6px;color:var(--dim);max-width:44ch;line-height:1.45}
-  @media (max-width:640px){ .f2{grid-template-columns:1fr} }
 
   /* What a two-day week actually buys, as a list rather than prose. */
   .doing{margin:var(--s5) 0 0;padding:0;list-style:none;display:grid;gap:10px;
@@ -812,71 +795,6 @@ document.querySelectorAll("[data-sw]").forEach(fig => {
       if (cap) cap.innerHTML = CAPS[i] || "";
     }, 90);
   }, { passive: true });
-});
-
-// Enquiry form.
-//
-// A mailto: handoff opens the visitor's own mail app — but on a machine with
-// no mail client registered it does nothing at all and the button looks dead.
-// So we always show the composed message as well: they can copy it, or copy
-// the address, and the enquiry still reaches us.
-const ENQUIRY_TO = "hello@goldenpipitsolutions.com";
-const enq = document.getElementById("enq");
-if (enq) enq.addEventListener("submit", e => {
-  e.preventDefault();
-  const f = new FormData(enq);
-  const v = k => (f.get(k) || "").toString().trim();
-  const body = [
-    "Name: " + v("name"),
-    "Organisation: " + (v("org") || "\u2014"),
-    "Email: " + v("email"),
-    "Phone: " + (v("phone") || "\u2014"),
-    "",
-    "What they need:",
-    v("msg"),
-  ].join("\n");
-  const subject = "Enquiry from " + v("name") + (v("org") ? " \u2014 " + v("org") : "");
-
-  let out = document.getElementById("enqout");
-  if (!out) {
-    out = document.createElement("div");
-    out.id = "enqout";
-    out.className = "enqout";
-    enq.appendChild(out);
-  }
-  const mailto = "mailto:" + ENQUIRY_TO + "?subject=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(body);
-  out.innerHTML =
-    '<h4>Your message is ready</h4>' +
-    '<p>Open it in your own mail app, or copy it and send it to <strong>' + ENQUIRY_TO +
-    '</strong> — both reach the same inbox.</p>' +
-    '<textarea rows="8" readonly id="enqtext"></textarea>' +
-    '<div class="enqrow">' +
-      '<a class="btn btn-primary" id="enqmail" href="">Open in mail app</a>' +
-      '<button type="button" class="btn" id="enqcopy" style="border-color:var(--line)">Copy message</button>' +
-      '<button type="button" class="btn" id="enqaddr" style="border-color:var(--line)">Copy address</button>' +
-      '<span class="ok" id="enqok" hidden>Copied</span>' +
-    '</div>';
-  document.getElementById("enqtext").value = "To: " + ENQUIRY_TO + "\nSubject: " + subject + "\n\n" + body;
-
-  const flash = () => {
-    const ok = document.getElementById("enqok");
-    ok.hidden = false;
-    setTimeout(() => { ok.hidden = true; }, 1800);
-  };
-  const copy = text => {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(flash, () => {});
-    } else {
-      const t = document.getElementById("enqtext");
-      t.select(); document.execCommand("copy"); flash();
-    }
-  };
-  document.getElementById("enqcopy").onclick = () =>
-    copy(document.getElementById("enqtext").value);
-  document.getElementById("enqaddr").onclick = () => copy(ENQUIRY_TO);
-  document.getElementById("enqmail").href = mailto;
-  out.scrollIntoView({ block: "nearest", behavior: "smooth" });
 });
 
 document.querySelectorAll("[data-logos]").forEach(el => {
