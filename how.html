@@ -82,6 +82,7 @@
   .btn-ghost:hover{border-color:var(--gold-400);color:var(--gold-400)}
 
   /* Badge group — kit node I1321:167. Dot badge, copy, arrow. */
+  .hero .badgegroup{margin-bottom:var(--spacing-xl)}
   .badgegroup{display:inline-flex;align-items:center;gap:var(--spacing-md);
     align-self:flex-start;margin-bottom:var(--spacing-xl);text-decoration:none;
     padding:var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
@@ -115,22 +116,27 @@
     background-size:96px 96px;
     -webkit-mask-image:radial-gradient(120% 90% at 50% 0%, #000 35%, transparent 78%);
             mask-image:radial-gradient(120% 90% at 50% 0%, #000 35%, transparent 78%)}
-  .hero .wrap{position:relative;z-index:1;padding-block:var(--s6) var(--s7)}
+  .hero .wrap{position:relative;z-index:1;padding-block:var(--s6) var(--s8)}
   .nav{display:flex;align-items:baseline;gap:var(--s3);flex-wrap:wrap;margin-bottom:var(--s7)}
   .mark{font-size:15.5px;font-weight:700;color:#fff;letter-spacing:-.015em}
   .mark i{font-style:normal;color:var(--gold-400)}
   .nav .eyebrow{color:var(--on-3)}
-  .hero h1{color:#fff;max-width:15ch}
+  /* The headline used to be capped at 15ch, which on a desktop left it 594px
+     wide inside a 1080px container while the stat bar below spanned the lot.
+     Two different measures in one block is what read as bad spacing. Now
+     everything in the hero shares the container's width, and the headline
+     sets on one line when there is room for it. */
+  .hero h1{color:#fff;text-wrap:balance}
   .hero h1 em{font-style:normal;color:var(--gold-400)}
   /* Text xl: 20/30, tertiary. */
-  .hero .lede{margin-top:var(--spacing-3xl);max-width:52ch;
+  .hero .lede{margin-top:var(--spacing-2xl);max-width:60ch;text-wrap:pretty;
     font-size:var(--font-size-text-xl);line-height:var(--line-height-text-xl);
     color:var(--on-2)}
   .cta{display:flex;gap:var(--s3);flex-wrap:wrap;margin-top:var(--s6)}
 
   .proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
     background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14);
-    border-radius:11px;overflow:hidden;margin-top:var(--s6)}
+    border-radius:11px;overflow:hidden;margin-top:var(--s7)}
   .proof div{background:rgba(11,21,36,.74);padding:15px 16px}
 
   .proof b{display:block;font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:600;
